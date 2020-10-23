@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'recipe-book';
+  showRecipe = true;
+  showShopping = false;
+  
+  onNavigation(status: {recipeStatus: boolean, shoppingStatus: boolean}) {
+    this.showRecipe = status.recipeStatus;
+    this.showShopping = status.shoppingStatus;
+  }
 }
