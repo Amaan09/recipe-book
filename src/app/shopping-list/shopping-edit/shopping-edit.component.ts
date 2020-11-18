@@ -1,4 +1,6 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { Ingredient } from '../../shared/ingredient.model';
 
@@ -9,23 +11,56 @@ import { ShoppingListService } from '../shopping-list.service';
   templateUrl: './shopping-edit.component.html',
   styleUrls: ['./shopping-edit.component.css']
 })
-export class ShoppingEditComponent implements OnInit {
+export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  @ViewChild('nameInput', {static: false}) nameInput: ElementRef;
-  @ViewChild('amountInput', {static: false}) amountInput: ElementRef;
-
-  
+  @ViewChild('f', {static: false}) shoppingForm: NgForm;
+  EditingSubscription: Subscription;
+  editMode = false;
+  editedItemIndex: number;
+  editedItem: Ingredient;
 
   constructor(private shoppingListService: ShoppingListService) { }
 
   ngOnInit(): void {
+    this.EditingSubscription =  this.shoppingListService.startedEditing.subscribe(
+      (index: number) => {
+        this.editMode = true;
+        this.editedItemIndex = index;
+        this.editedItem = this.shoppingListService.getIngredient(index);
+        this.shoppingForm.setValue({
+          name: this.editedItem.name,
+          amount: this.editedItem.amount
+        });
+      }
+    )
   }
 
-  onAddIngredient() {
-    const ingName = this.nameInput.nativeElement.value; 
-    const ingAmount = this.amountInput.nativeElement.value;
+  onSubmit() {
+    const value = this.shoppingForm.value;
+    const ingName = value.name;
+    const ingAmount = value.amount;
     const newIngredient = new Ingredient(ingName, ingAmount);
-    this.shoppingListService.addIngredients(newIngredient);
+    if (this.editMode) {
+      this.shoppingListService.updateIngredient(this.editedItemIndex, newIngredient);
+    } else {
+      this.shoppingListService.addIngredients(newIngredient);
+    }
+    this.editMode = false;
+    this.shoppingForm.reset();
+  }
+
+  ngOnDestroy() {
+    this.EditingSubscription.unsubscribe();
+  }
+
+  onClear() {
+    this.editMode = false;
+    this.shoppingForm.reset();
+  }
+
+  onDelete() {
+    this.shoppingListService.deleteIngredient(this.editedItemIndex);
+    this.onClear();
   }
 
 }
