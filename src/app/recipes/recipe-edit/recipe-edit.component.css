@@ -1,3 +1,8 @@
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
 #container {
     margin: 30px auto;
 }
@@ -8,4 +13,8 @@
 
 button {
     margin-right: 3px;
+}
+
+.recipe-control {
+    margin-top: 15px;
 }
