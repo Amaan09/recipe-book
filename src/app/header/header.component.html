@@ -10,6 +10,7 @@
             <ul class="nav navbar-nav">
                 <li routerLinkActive = "active"> <a routerLink = "/recipes">Recipies</a> </li>
                 <li routerLinkActive = "active"> <a routerLink = "/shopping-list">Shopping List</a> </li>
+                <li routerLinkActive="active"> <a routerLink="/auth">Authenticate</a> </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" appDropdown>
@@ -17,7 +18,7 @@
                     <ul class="dropdown-menu">
                         <li style="cursor: pointer;" (click) = "onSaveRecipes()"> <a>Save Data</a> </li>
                         <li style="cursor: pointer;" (click) = "onFetchRecipes()"> <a>Fetch Data</a> </li>
-                    </ul>
+                    </ul>   
                 </li>
             </ul>
         </div>
